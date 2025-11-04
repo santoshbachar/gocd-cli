@@ -73,12 +73,12 @@ def test_get_command_raises_reasonable_errors(go_server):
     with pytest.raises(AttributeError) as exc:
         gocd_cli.utils.get_command(go_server, 'pipeline', 'no-such-command')
     assert 'gocd_cli.commands.pipeline' in str(exc)
-    assert 'object has no attribute \'NoSuchCommand\'' in str(exc)
+    assert 'has no attribute \'NoSuchCommand\'' in str(exc)
 
     with pytest.raises(TypeError) as exc:
         gocd_cli.utils.get_command(go_server, 'pipeline', 'retrigger-failed')
     assert 'RetriggerFailed' in str(exc)
-    assert '__init__() takes at least 3 arguments (2 given)' in str(exc)
+    assert 'missing 1 required positional argument: \'name\'' in str(exc)
 
 
 class TestIsFileReadable(object):

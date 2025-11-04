@@ -33,23 +33,41 @@ class BaseCommand(object):
     @classmethod
     def get_call_documentation(cls):
         def get_arg_names():
-            args, varargs, keywords, defaults = inspect.getargspec(cls.__init__)
-            if args[0] == 'self':
-                del args[0]
-            if args[0] == 'server':
-                del args[0]
+            sig = inspect.signature(cls.__init__)
+            params = sig.parameters.values()
 
-            kwargs = args[-len(defaults):] if defaults else []
-            positional = args[:-len(kwargs)] if kwargs else args
+            args = [
+                p.name for p in params
+                if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+                   and p.name != 'self'
+            ]
+            defaults = [
+                p.default for p in params
+                if p.kind in (p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY)
+                   and p.default is not p.empty
+            ]
+            varargs = next((p.name for p in params if p.kind == p.VAR_POSITIONAL), None)
+            keywords = next((p.name for p in params if p.kind == p.VAR_KEYWORD), None)
 
-            return positional, kwargs
-        args, kwargs = get_arg_names()
+            return args, varargs, keywords, defaults or None
 
-        return '{command} {args} {kwargs}'.format(
-            command=dasherize_name(cls.__name__),
-            args=' '.join('<{0}>'.format(arg) for arg in args),
-            kwargs=' '.join('[--{0}]'.format(arg.replace('_', '-')) for arg in kwargs),
-        ).strip()
+        args, varargs, keywords, defaults = get_arg_names()
+
+        # Build usage string
+        parts = [dasherize_name(cls.__name__)]
+
+        # Required args: <name>
+        parts.extend(f'<{arg}>' for arg in args)
+
+        # *args: *varargs
+        if varargs:
+            parts.append(f'*{varargs}')
+
+        # **kwargs: [--kwarg ...]
+        if keywords:
+            parts.append('[--...]')  # Simplified; could list if needed
+
+        return ' '.join(parts).strip()
 
     def _return_value(self, output, exit_code):
         if isinstance(exit_code, bool):

@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 from os import getenv
 
 
@@ -27,7 +27,7 @@ class IniSettings(BaseSettings):
     """
     def __init__(self, **kwargs):
         self.section = kwargs.get('section', '').lower()
-        self.config = ConfigParser.SafeConfigParser()
+        self.config = configparser.ConfigParser()
 
         filename = kwargs.get('filename', None)
         if filename:
@@ -38,7 +38,7 @@ class IniSettings(BaseSettings):
     def get(self, option):
         try:
             return self.config.get(self.section, option)
-        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+        except (configparser.NoOptionError, configparser.NoSectionError):
             return super(IniSettings, self).get(option)
 
 

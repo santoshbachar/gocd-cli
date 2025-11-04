@@ -43,16 +43,18 @@ class TestBaseCommandDocumentation(object):
         assert FakeCommand.get_usage_summary() in FakeCommand.get_usage()
 
     def test_usage_uses_call_documentation(self):
-        assert 'fake-command <name> [--limit] [--failure-mode]' in FakeCommand.get_usage()
+        assert ("fake-command <server> <name> <limit> <failure_mode>\n\nI'm merely an "
+                "example of things to come\n\nArgs:\n    something: something else\n    some-more: "
+                "the other thing\n" in
+                FakeCommand.get_usage())
 
     def test_get_call_documentation(self):
         documentation = FakeCommand.get_call_documentation()
 
         assert 'fake-command' in documentation
-        assert 'fake-command <name>' in documentation
-        assert 'fake-command <name> [--limit] [--failure-mode]' in documentation
+        assert 'fake-command <server> <name> <limit> <failure_mode>' in documentation
 
     def test_get_call_documentation_no_defaults(self):
         documentation = FakeCommandNoKwargs.get_call_documentation()
 
-        assert 'fake-command-no-kwargs <name>' in documentation
+        assert 'fake-command-no-kwargs <server> <name>' in documentation

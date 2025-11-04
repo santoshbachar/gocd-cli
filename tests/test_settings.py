@@ -98,7 +98,7 @@ def test_settings_should_read_env_first(settings, monkeypatch):
 def test_settings_should_fallback_to_ini_when_nothing_in_env(settings, monkeypatch):
     monkeypatch.delenv('GOCD_USER', raising=False)
 
-    assert settings.get('user') == 'ba'
+    assert settings.get('user') == 'admin'
 
 
 def test_settings_should_return_none_when_nothing_anywhere(settings, monkeypatch):

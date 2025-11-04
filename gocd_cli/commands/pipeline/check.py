@@ -33,7 +33,9 @@ class Check(BaseCommand):
         2: When there's a critical warning
         3: When the pipeline is paused
     """
-    usage_summary = 'Check whether a pipeline has run successfully'
+    usage_summary = ('Check whether a pipeline has run successfully.\n'
+                     '\t\tadditional params -> <page_size> in number. defaults to 10.\n'
+                     '\t\teg.: gocd pipeline check PHP 20')
     __now = None
     _ran_after = None
 
@@ -115,7 +117,9 @@ class Check(BaseCommand):
                 )
             else:
                 return self._return_value('Successful')
-        elif self.ran_after >= self.started_at:
+        elif (self.ran_after is not None and
+              self.started_at is not None and
+              self.ran_after >= self.started_at):
             return self._return_ran_after_fail()
         else:
             return self._return_value('Successful')
@@ -145,7 +149,7 @@ class Check(BaseCommand):
             return
 
         now = dt.datetime.fromtimestamp(self._now / 1000)
-        val = dt.time(*map(lambda x: int(x), value.split(':')))
+        val = dt.time(*[int(x) for x in value.split(':')])
         val = dt.datetime.now().replace(
             hour=val.hour,
             minute=val.minute,
@@ -183,7 +187,7 @@ class Check(BaseCommand):
         return dt.datetime.fromtimestamp(unix_timestamp / 1000).strftime('%Y-%m-%dT%H:%M:%S')
 
     def _get_earliest(self, time_key, stage):
-        return min(map(lambda job: job[time_key], stage['jobs']))
+        return min([job[time_key] for job in stage['jobs']])
 
     def _update_started_at(self, scheduled_at):
         if not self._started_at or self._started_at > scheduled_at:
