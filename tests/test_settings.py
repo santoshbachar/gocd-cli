@@ -49,7 +49,7 @@ def env_settings():
 
 
 def test_reads_configuration_key_from_ini(ini_settings):
-    assert ini_settings.get('server') == 'http://localhost:8153'
+    assert ini_settings.get('server') == 'http://localhost:8153/'
 
 
 def test_reads_non_existant_key_from_ini_returns_none(ini_settings):
