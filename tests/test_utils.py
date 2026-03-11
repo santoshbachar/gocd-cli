@@ -124,7 +124,7 @@ class TestGetSettings(object):
         monkeypatch.delenv('GOCD_SERVER', raising=False)
         settings = gocd_cli.utils.get_settings(settings_paths=support_path())
 
-        assert settings.get('server') == 'http://localhost:8153'
+        assert settings.get('server') == 'http://localhost:8153/'
 
     def test_get_settings_from_second_file(self, monkeypatch):
         monkeypatch.delenv('GOCD_SERVER', raising=False)
