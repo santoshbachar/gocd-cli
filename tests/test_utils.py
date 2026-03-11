@@ -133,7 +133,7 @@ class TestGetSettings(object):
             support_path('gocd-cli-alternative.cfg')
         ))
 
-        assert settings.get('server') == 'http://goserver.dev'
+        assert settings.get('server') == 'http://goserver.dev/'
 
     def test_only_try_to_read_files_not_dirs(self, monkeypatch):
         monkeypatch.delenv('GOCD_SERVER', raising=False)
