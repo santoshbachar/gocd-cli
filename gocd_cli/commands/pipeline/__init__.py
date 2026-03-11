@@ -134,19 +134,15 @@ class Unlock(BaseCommand):
 
 class Pause(BaseCommand):
     usage = ' '
-    usage_summary = ('Pauses the named pipeline. <sub-sub command> reason in ""\n\t\t'
-                     'eg.: gocd pipeline pause prod "deploying on a Friday? Nope."')
+    usage_summary = 'Pauses the named pipeline'
 
-    def __init__(self, server, name, reason=''):
+    def __init__(self, server, name):
         self.pipeline = server.pipeline(name)
-        self.reason = str(reason).strip()
 
     def run(self):
         response = self.pipeline.status()
 
         if response and not response['paused']:
-            if len(self.reason) > 0:
-                return self.pipeline.pause(self.reason)
             return self.pipeline.pause()
         else:
             return False
