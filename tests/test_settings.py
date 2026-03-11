@@ -66,7 +66,7 @@ def test_ini_section_is_made_lowercase():
         filename=path.join(path.dirname(__file__), 'support/gocd-cli.cfg')
     )
 
-    assert settings.get('server') == 'http://localhost:8153'
+    assert settings.get('server') == 'http://localhost:8153/'
 
 
 def test_reads_configuration_key_from_env(env_settings, monkeypatch):
