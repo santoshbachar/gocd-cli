@@ -33,7 +33,9 @@ class Check(BaseCommand):
         2: When there's a critical warning
         3: When the pipeline is paused
     """
-    usage_summary = 'Check whether a pipeline has run successfully'
+    usage_summary = ('Check whether a pipeline has run successfully.\n'
+                     '\t\tadditional params -> <page_size> in number. defaults to 10.\n'
+                     '\t\teg.: gocd pipeline check up42 20')
     __now = None
     _ran_after = None
 
