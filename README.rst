@@ -39,13 +39,23 @@ things just one invocation.
 
 Note
 ----
-
-This is still early in the development and a bit rough around the edges.
+This library strictly requires Python version 3.12.x and is compatible with py-gocd 1.0.0,
+though still early in the development and a bit rough around the edges.
 Any bug reports, feature suggestions, etc are greatly appreciated. :)
 
 I'm planning to add support for all the API endpoints that make sense from a CLI
 perspective. And also to handle some of the scenarios where we ended up writing
 shell scripts.
+
+Supported pipeline commands
+1. check
+2. check-all
+3. list
+4. pause
+5. trigger
+6. unpause
+
+**Honestly, the rest will give out errors**
 
 Installation and usage
 ----------------------
