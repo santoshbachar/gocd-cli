@@ -1,4 +1,4 @@
-gocd==0.15.2
+gocd>=1.0.0
 tox
 mock==1.0.1
 pytest

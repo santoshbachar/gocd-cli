@@ -56,7 +56,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.12.x'
+        'Programming Language :: Python :: 3.12.12'
     ],
     python_requires='==3.12.12'
 )
