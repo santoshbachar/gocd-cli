@@ -34,17 +34,19 @@ class Check(BaseCommand):
         3: When the pipeline is paused
     """
     usage_summary = ('Check whether a pipeline has run successfully.\n'
-                     '\t\tadditional params -> <page_size> in number. defaults to 10.\n'
+                     '\t\tadditional params -> <instance_counter> in number. defaults to latest.\n'
                      '\t\teg.: gocd pipeline check up42 20')
     __now = None
     _ran_after = None
 
     final_job_states = ['Passed', 'Failed']  # States when a job/stage isn't doing anything more
 
-    def __init__(self, server, name, ran_after=None, warn_run_time=30, crit_run_time=60,
-                 ignore_paused=False):
+    def __init__(self, server, name, instance=None, ran_after=None, warn_run_time=30,
+        crit_run_time=60, ignore_paused=False):
+
         self.name = name
         self.pipeline = server.pipeline(name)
+        self.instance = instance
         self.ran_after = ran_after
         self.warn_run_time = warn_run_time
         self.crit_run_time = crit_run_time
@@ -62,7 +64,12 @@ class Check(BaseCommand):
             elif status['paused']:
                 return self._return_value('Pipeline "{0}" is paused'.format(self.name), 'unknown')
 
-        instance = self.pipeline.instance()
+        instance_int = int(self.instance) if self.instance else None
+        if not instance_int:
+            history = self.pipeline.history()
+            instance_int = history["pipelines"][0]["counter"]
+
+        instance = self.pipeline.instance(instance_int)
         if not instance:
             raise Exception('Invalid response! "{0}"'.format(instance.body))
         elif not instance.body:  # No instance available, i.e. pipeline has never been scheduled
