@@ -57,6 +57,8 @@ Supported pipeline commands
 
 **Honestly, the rest will give out errors**
 
+In case you encounter any issues, then scripts/test.py will help you get started with debugging.
+
 Installation and usage
 ----------------------
 
