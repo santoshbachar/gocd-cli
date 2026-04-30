@@ -40,7 +40,9 @@ class Trigger(BaseCommand):
         secure_variables: A comma separated list of key=value pairs.
         wait_until_finished: Will wait until the pipeline finishes running and
           then exit 0 on success, and 2 on failure. The console.log will
-          be output for each stage in order.
+          be output for each stage in order. ⚠️NOTE: Consider waiting for double the number of
+          seconds you specify, as this value is applied in both waiting for pipeline to get
+          started as well as for it to get finished.
         verbose: Will print a . every tick when wait_until_finished is true
     """
     usage_summary = 'Triggers the named pipeline'
