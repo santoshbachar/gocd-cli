@@ -64,6 +64,7 @@ class Trigger(BaseCommand):
             variables=self.variables,
             secure_variables=self.secure_variables,
             return_new_instance=self.wait_until_finished,
+            maximum_backoff_time=100
         )
 
         if not self.wait_until_finished and response.is_ok:
