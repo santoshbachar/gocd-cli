@@ -51,12 +51,13 @@ class Trigger(BaseCommand):
     _tick = 30  # seconds
 
     def __init__(self, server, name, unlock=False, variables=None, secure_variables=None,
-                 wait_until_finished=False, verbose=False):
+        wait_until_finished=False, maximum_backoff_time= 23_400.00, verbose=False):
         self.pipeline = server.pipeline(name)
         self.unlock = str(unlock).lower().strip() == 'true'
         self.variables = self._convert_to_dict(variables)
         self.secure_variables = self._convert_to_dict(secure_variables)
         self.wait_until_finished = str(wait_until_finished).lower().strip() == 'true'
+        self.maximum_backoff_time = float(maximum_backoff_time)
         self.verbose = str(verbose).lower().strip() == 'true'
 
     def run(self):
@@ -67,7 +68,7 @@ class Trigger(BaseCommand):
             variables=self.variables,
             secure_variables=self.secure_variables,
             return_new_instance=self.wait_until_finished,
-            maximum_backoff_time=100
+            maximum_backoff_time=self.maximum_backoff_time,
         )
 
         if not self.wait_until_finished and response.is_ok:
@@ -228,8 +229,8 @@ class CheckAll(BaseCommand):
                 if self.skip_paused and response['exit_code'] == self.PAUSED_STATUS:
                     continue
 
-                if(response['exit_code'] != self.PAUSED_STATUS
-                   and response['exit_code'] > self.exit_code):
+                if (response['exit_code'] != self.PAUSED_STATUS
+                    and response['exit_code'] > self.exit_code):
                     self.exit_code = response['exit_code']
 
                 self.error_messages.append(response['output'])
