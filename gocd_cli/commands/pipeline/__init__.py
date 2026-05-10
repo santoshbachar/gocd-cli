@@ -72,7 +72,7 @@ class Trigger(BaseCommand):
         if not self.wait_until_finished and response.is_ok:
             return self._return_value('', exit_code=0)
         elif not response.is_ok:
-            return self._return_value(response.body.strip(), response.is_ok)
+            return self._return_value(_safe_body(getattr(response, 'body', None)), response.is_ok)
 
         instance_id = response['counter']
         while not self._stages_finished(response):
@@ -87,6 +87,16 @@ class Trigger(BaseCommand):
             False,
             self._run_successful(response),
         )
+
+    def _safe_body(body):
+        """Normalize response body to a printable string."""
+        if isinstance(body, dict):
+            return json.dumps(body, indent=2)
+        elif isinstance(body, str):
+            return body.strip()
+        elif body is None:
+            return ''
+        return str(body)
 
     def _convert_to_dict(self, args):
         # XXX: I would like to find a better way of dealing with this,
