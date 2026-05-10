@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import time
+import json
 
 from gocd_cli.command import BaseCommand
 from gocd_cli.utils import get_settings
@@ -72,22 +73,27 @@ class Trigger(BaseCommand):
         if not self.wait_until_finished and response.is_ok:
             return self._return_value('', exit_code=0)
         elif not response.is_ok:
-            return self._return_value(_safe_body(getattr(response, 'body', None)), response.is_ok)
+            return self._return_value(self._safe_body(getattr(response, 'body', None)),
+                                      response.is_ok)
 
-        instance_id = response['counter']
-        while not self._stages_finished(response):
-            if self.verbose:
-                print('.', end='')
-            time.sleep(self._tick)
-            response = self.pipeline.instance(instance_id)
+        # We are very much sure that, if we got through the first two conditions
+        # with return_new_instance=True, then we don't want to wait here as well
+        # instance_id = response['counter']
+        # while not self._stages_finished(response):
+        #     if self.verbose:
+        #         print('.', end='')
+        #     time.sleep(self._tick)
+        #     response = self.pipeline.instance(instance_id)
 
-        self._print_job_output(response)
+        # What is this doing here?
+        # self._print_job_output(response)
 
         return self._return_value(
             False,
             self._run_successful(response),
         )
 
+    @staticmethod
     def _safe_body(body):
         """Normalize response body to a printable string."""
         if isinstance(body, dict):
@@ -122,7 +128,7 @@ class Trigger(BaseCommand):
 
     def _run_successful(self, response):
         for stage in response['stages']:
-            if stage['result'] == 'Failed':
+            if stage['result'] == 'Failed' or stage['result'] == 'Cancelled':
                 return False
 
         return True
