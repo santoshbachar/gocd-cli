@@ -169,4 +169,5 @@ def get_go_server(settings=None):
         settings.get('server'),
         user=settings.get('user'),
         password=settings.get('password'),
+        log_file=settings.get('log_file')
     )
